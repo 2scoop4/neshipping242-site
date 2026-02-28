@@ -34,6 +34,30 @@
   const TYPES = ["Box", "Package"];
   const ISLANDS = ["Abaco", "Freeport", "Nassau", "Bimini"];
 
+
+  function ensureIdentityLoaded() {
+    return new Promise((resolve, reject) => {
+      if (window.netlifyIdentity) return resolve(window.netlifyIdentity);
+      // Try to load the widget script dynamically (helps on some mobile browsers / blockers).
+      const existing = document.querySelector('script[src*="netlify-identity-widget.js"]');
+      if (!existing) {
+        const s = document.createElement("script");
+        s.src = "https://identity.netlify.com/v1/netlify-identity-widget.js";
+        s.async = true;
+        s.onload = () => window.netlifyIdentity ? resolve(window.netlifyIdentity) : reject(new Error("Identity widget failed to load."));
+        s.onerror = () => reject(new Error("Identity widget failed to load."));
+        document.head.appendChild(s);
+      } else {
+        // Wait briefly in case defer script hasn't executed yet
+        let tries = 0;
+        const t = setInterval(() => {
+          tries++;
+          if (window.netlifyIdentity) { clearInterval(t); resolve(window.netlifyIdentity); }
+          if (tries > 50) { clearInterval(t); reject(new Error("Identity widget not available.")); }
+        }, 100);
+      }
+    });
+  }
   function showMsg(ok, text) {
     msgOk.style.display = "none";
     msgErr.style.display = "none";
@@ -214,7 +238,12 @@
   }
 
   function wireIdentity() {
-    if (!window.netlifyIdentity) return;
+    try {
+      await ensureIdentityLoaded();
+    } catch (e) {
+      authText.textContent = "Auth: unavailable (Identity not loaded)";
+      return;
+    }
 
     // If someone lands here after signup/login redirect, close modal
     window.netlifyIdentity.on("init", (user) => setAuthedUI(user));
@@ -227,13 +256,22 @@
     window.netlifyIdentity.init();
   }
 
-  loginBtn.addEventListener("click", () => {
-    if (!window.netlifyIdentity) return;
-    window.netlifyIdentity.open("login");
+  loginBtn.addEventListener("click", async () => {
+    try {
+      const ni = await ensureIdentityLoaded();
+      ni.open("login");
+    } catch (e) {
+      showMsg(false, (e && e.message) ? e.message : "Login is unavailable. Please disable content blockers and refresh.");
+    }
   });
 
-  logoutBtn.addEventListener("click", () => {
-    if (!window.netlifyIdentity) return;
+logoutBtn.addEventListener("click", () => {
+    try {
+      await ensureIdentityLoaded();
+    } catch (e) {
+      authText.textContent = "Auth: unavailable (Identity not loaded)";
+      return;
+    }
     window.netlifyIdentity.logout();
   });
 
