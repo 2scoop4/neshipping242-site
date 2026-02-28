@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#76C55C" />
+  <title>N&E Enterprises | Employee Receiving Portal</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="/logo.png" />
+  <style>
+    :root{
+      --brand:#76C55C;
+      --brand-2:#718F41;
+      --ink:#171a17;
+      --ink-2:#2a3128;
+      --muted:#586450;
+      --bg:#ffffff;
+      --bg-2:#f6f8f6;
+      --border:rgba(23,26,23,.12);
+      --r-xl:28px;
+      --shadow: 0 18px 60px rgba(23,26,23,.10);
+      --shadow-2: 0 12px 28px rgba(23,26,23,.10);
+      --max: 980px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background: radial-gradient(1400px 700px at 50% -10%, rgba(118,197,92,.20), rgba(255,255,255,0) 60%),
+                  linear-gradient(180deg, #fff, var(--bg-2));
+      min-height:100vh;
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      background: rgba(255,255,255,.82);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--border);
+    }
+    .wrap{max-width:var(--max); margin:0 auto; padding: 14px 18px;}
+    .bar{display:flex; align-items:center; gap:12px; justify-content:space-between;}
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;}
+    .brand img{width:38px; height:38px; border-radius:12px; box-shadow: var(--shadow-2); object-fit:cover;}
+    .brand b{display:block; line-height:1.1}
+    .brand small{display:block; color:var(--muted); font-weight:600}
+    .btn{
+      appearance:none; border:1px solid var(--border); background:#fff;
+      padding:10px 12px; border-radius:14px; font-weight:700; cursor:pointer;
+      box-shadow: 0 10px 30px rgba(23,26,23,.06);
+    }
+    .btn.primary{background:var(--brand); border-color:rgba(0,0,0,.08); color:#10210f;}
+    .btn:disabled{opacity:.6; cursor:not-allowed}
+    main{padding: 28px 18px 60px;}
+    .card{
+      max-width:var(--max); margin:0 auto;
+      background: rgba(255,255,255,.86);
+      border:1px solid var(--border);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card-head{padding: 22px 22px 10px;}
+    h1{margin:0 0 6px; font-size: 24px;}
+    p{margin:0 0 14px; color:var(--muted); line-height:1.45}
+    .status{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      padding: 0 22px 18px;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--border);
+      background: #fff;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-weight:700;
+      color:var(--ink-2);
+    }
+    .dot{width:9px; height:9px; border-radius:999px; background:#bbb}
+    .dot.ok{background: var(--brand)}
+    form{padding: 0 22px 22px;}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+    }
+    .field{grid-column: span 12;}
+    @media (min-width: 860px){
+      .field.half{grid-column: span 6;}
+      .field.third{grid-column: span 4;}
+    }
+    label{display:block; font-size: 13px; font-weight:800; margin: 2px 2px 6px; color:var(--ink-2);}
+    input, select, textarea{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--ink);
+      font-size: 15px;
+      outline:none;
+    }
+    textarea{min-height: 90px; resize: vertical;}
+    .help{font-size: 12px; color: var(--muted); margin: 6px 2px 0;}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top: 14px;}
+    .msg{
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--border);
+      background: #fff;
+      color: var(--ink-2);
+      display:none;
+      font-weight:700;
+    }
+    .msg.ok{border-color: rgba(118,197,92,.35); background: rgba(118,197,92,.10);}
+    .msg.err{border-color: rgba(220,38,38,.28); background: rgba(220,38,38,.06);}
+    .foot{
+      padding: 16px 22px 22px;
+      border-top:1px solid var(--border);
+      background: rgba(246,248,246,.6);
+      color: var(--muted);
+      font-size: 12px;
+      line-height:1.45;
+    }
+    .link{color:var(--brand-2); font-weight:800; text-decoration:none}
+
+    /* Grid view */
+    .grid-card{border-top:1px solid var(--border); padding: 18px 22px 22px;}
+    .grid-head{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+    .grid-head h2{margin:0; font-size:18px;}
+    .grid-actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .table-wrap{margin-top:12px; overflow:auto; border:1px solid var(--border); border-radius:18px; background:#fff;}
+    table{border-collapse:separate; border-spacing:0; width:100%; min-width: 1180px;}
+    thead th{position:sticky; top:0; background: rgba(246,248,246,.95); backdrop-filter: blur(8px);}
+    th, td{padding:10px 10px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top; font-size:13px;}
+    th{font-size:12px; letter-spacing:.02em; text-transform:uppercase; color:var(--muted);}
+    tr:last-child td{border-bottom:none;}
+    .cell-input{padding:10px 10px; border-radius:12px; border:1px solid var(--border); width: 100%; font-size:14px;}
+    .cell-select{padding:10px 10px; border-radius:12px; border:1px solid var(--border); width:100%; font-size:14px; background:#fff;}
+    .mini{font-size:12px; color:var(--muted); font-weight:700;}
+    .thumb{width:42px; height:42px; border-radius:12px; object-fit:cover; border:1px solid var(--border);}
+    .row-actions{display:flex; gap:8px; align-items:center;}
+    .btn.sm{padding:8px 10px; border-radius:12px; font-size:13px;}
+    .muted{color:var(--muted)}
+  </style>
+
+  <!-- Netlify Identity widget (handles login UI) -->
+  <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script defer src="/employee/employee.js"></script>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="bar">
+        <a class="brand" href="/">
+          <img src="/logo.png" alt="N&E" />
+          <div>
+            <b>N&E Enterprises</b>
+            <small>Employee Receiving Portal</small>
+          </div>
+        </a>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button id="loginBtn" class="btn primary" type="button">Sign in</button>
+          <button id="logoutBtn" class="btn" type="button" style="display:none;">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-label="Package intake form">
+      <div class="card-head">
+        <h1>Package Intake</h1>
+        <p>Log in to record packages as they arrive. Submissions are saved to the company intake log.</p>
+      </div>
+
+      <div class="status">
+        <span class="pill"><span id="authDot" class="dot"></span> <span id="authText">Not signed in</span></span>
+        <span id="userPill" class="pill" style="display:none;"></span>
+      </div>
+
+      <form id="intakeForm" autocomplete="off" style="display:none;">
+        <div class="grid">
+          <div class="field half">
+            <label for="trackingNumber">Tracking Number</label>
+            <input id="trackingNumber" name="trackingNumber" placeholder="e.g., 1Z999AA10123456784" required />
+            <div class="help">Required. Enter exactly as shown on the label.</div>
+          </div>
+
+          <div class="field half">
+            <label for="customerName">Customer Name</label>
+            <input id="customerName" name="customerName" placeholder="e.g., John Rolle" required />
+          </div>
+
+          <div class="field half">
+            <label for="carrier">Carrier</label>
+            <select id="carrier" name="carrier" required>
+              <option value="" selected disabled>Select carrier…</option>
+              <option>UPS</option>
+              <option>USPS</option>
+              <option>FedEx</option>
+              <option>DHL</option>
+              <option>Amazon</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field third">
+            <label for="packageType">Package Type</label>
+            <select id="packageType" name="packageType" required>
+              <option value="" selected disabled>Select type…</option>
+              <option value="Box">Box</option>
+              <option value="Package">Package</option>
+            </select>
+          </div>
+
+          <div class="field third">
+            <label for="weight">Weight (lb)</label>
+            <input id="weight" name="weight" inputmode="decimal" placeholder="e.g., 12.5" required />
+            <div class="help">Use pounds (lb). Numbers only.</div>
+          </div>
+
+          <div class="field third">
+            <label for="supplier">Supplier</label>
+            <input id="supplier" name="supplier" placeholder="e.g., Amazon / Shein / Home Depot" required />
+          </div>
+
+          <div class="field third">
+            <label for="island">Island Destination</label>
+            <select id="island" name="island" required>
+              <option value="" selected disabled>Select island…</option>
+              <option>Abaco</option>
+              <option>Freeport</option>
+              <option>Nassau</option>
+              <option>Bimini</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="itemDescription">Item Description</label>
+            <textarea id="itemDescription" name="itemDescription" placeholder="Short description of what arrived…" required></textarea>
+          </div>
+
+          <div class="field">
+            <label for="packagePhoto">Package Photo (optional)</label>
+            <input id="packagePhoto" name="packagePhoto" type="file" accept="image/*" capture="environment" />
+            <div class="help">Optional. Photos are uploaded into Airtable (max ~5MB per image for API uploads).</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="submitBtn" class="btn primary" type="submit">Save Package</button>
+          <button id="resetBtn" class="btn" type="button">Clear</button>
+        </div>
+
+        <div id="msgOk" class="msg ok">Saved successfully.</div>
+        <div id="msgErr" class="msg err">Something went wrong.</div>
+      </form>
+
+      <div id="gridSection" class="grid-card" style="display:none;">
+        <div class="grid-head">
+          <div>
+            <h2>Intake Log (Editable)</h2>
+            <div class="mini">View, edit, and update recent packages.</div>
+          </div>
+          <div class="grid-actions">
+            <button id="refreshBtn" class="btn sm" type="button">Refresh</button>
+          </div>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Editable intake grid">
+          <table>
+            <thead>
+              <tr>
+                <th>Received At</th>
+                <th>Received By</th>
+                <th>Tracking #</th>
+                <th>Customer</th>
+                <th>Island</th>
+                <th>Carrier</th>
+                <th>Type</th>
+                <th>Weight (lb)</th>
+                <th>Supplier</th>
+                <th>Description</th>
+                <th>Photo</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="gridBody">
+              <tr><td class="muted" colspan="12">Sign in to view the intake log.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="foot">
+        Tip: If an employee can’t sign in, an admin should invite them in Netlify Identity.<br/>
+        Need customer-facing quote/fees? Go back to the <a class="link" href="/">main site</a>.
+      </div>
+    </section>
+  </main>
+</body>
+</html>
